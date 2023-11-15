@@ -158,12 +158,13 @@ public abstract class AbstractShenyuClientRegisterServiceImpl extends FallbackSh
         if (CollectionUtils.isEmpty(uriList)) {
             return "";
         }
+        // fixme 未注册，何来的selectorName?
         SelectorDO selectorDO = selectorService.findByNameAndPluginName(selectorName, PluginNameAdapter.rpcTypeAdapter(rpcType()));
         if (Objects.isNull(selectorDO)) {
             throw new ShenyuException("doRegister Failed to execute,wait to retry.");
         }
         // fetch UPSTREAM_MAP data from db
-        //upstreamCheckService.fetchUpstreamData();
+        upstreamCheckService.fetchUpstreamData();
         //update upstream
         List<URIRegisterDTO> validUriList = uriList.stream().filter(dto -> Objects.nonNull(dto.getPort()) && StringUtils.isNotBlank(dto.getHost())).collect(Collectors.toList());
         String handler = buildHandle(validUriList, selectorDO);
@@ -174,6 +175,7 @@ public abstract class AbstractShenyuClientRegisterServiceImpl extends FallbackSh
             // update db
             selectorService.updateSelective(selectorDO);
             // publish change event.
+            // todo 为什么部分依赖spring的事件机制，部分使用disruptor?
             eventPublisher.publishEvent(new DataChangedEvent(ConfigGroupEnum.SELECTOR, DataEventTypeEnum.UPDATE, Collections.singletonList(selectorData)));
         }
         return ShenyuResultMessage.SUCCESS;

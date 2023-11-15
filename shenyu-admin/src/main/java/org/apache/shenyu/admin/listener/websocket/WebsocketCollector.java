@@ -84,6 +84,7 @@ public class WebsocketCollector {
      */
     @OnMessage
     public void onMessage(final String message, final Session session) {
+        LOG.info("onMessage {} , {}",message,session);
         if (!Objects.equals(message, DataEventTypeEnum.MYSELF.name())) {
             return;
         }

@@ -109,6 +109,19 @@ public abstract class AbstractContextRefreshedEventListener<T, A extends Annotat
      */
     public AbstractContextRefreshedEventListener(final PropertiesConfig clientConfig,
                                                  final ShenyuClientRegisterRepository shenyuClientRegisterRepository) {
+        // node:自动装配(spring.factory) 从properties 或基础config(discovery,regisery等) 关注 ShenyuRegisterCenterConfig
+        /**
+         * @see org.apache.shenyu.springboot.starter.client.common.config.ShenyuClientCommonBeanConfiguration
+         */
+
+        // 注册中心的实现Repo（七种：） HTTP，Nacos等 ， failBack和Http的抽象 重点关注
+        //
+        /**
+         * @see org.apache.shenyu.register.client.api.ShenyuClientRegisterRepository
+         */
+
+        // 此处若引入的 -- mvc :则是HttpClientRegisterRepository ， 注意和failback的职责区别
+
         Properties props = clientConfig.getProps();
         this.appName = props.getProperty(ShenyuClientConstants.APP_NAME);
         this.contextPath = Optional.ofNullable(props.getProperty(ShenyuClientConstants.CONTEXT_PATH)).map(UriUtils::repairData).orElse("");
@@ -120,6 +133,14 @@ public abstract class AbstractContextRefreshedEventListener<T, A extends Annotat
         this.ipAndPort = props.getProperty(ShenyuClientConstants.IP_PORT);
         this.host = props.getProperty(ShenyuClientConstants.HOST);
         this.port = props.getProperty(ShenyuClientConstants.PORT);
+        /**
+         * Meta,URI,API
+         *    factory.addSubscribers(new ShenyuClientMetadataExecutorSubscriber(shenyuClientRegisterRepository));
+         *         factory.addSubscribers(new ShenyuClientURIExecutorSubscriber(shenyuClientRegisterRepository));
+         *         factory.addSubscribers(new ShenyuClientApiDocExecutorSubscriber(shenyuClientRegisterRepository));
+         *         providerManage = new DisruptorProviderManage<>(factory);
+         *         providerManage.startup();
+         */
         publisher.start(shenyuClientRegisterRepository);
     }
 
@@ -134,8 +155,10 @@ public abstract class AbstractContextRefreshedEventListener<T, A extends Annotat
             return;
         }
         publisher.publishEvent(buildURIRegisterDTO(context, beans));
+        // 处理meta
         beans.forEach(this::handle);
         Map<String, Object> apiModules = context.getBeansWithAnnotation(ApiModule.class);
+        // 处理api文档
         apiModules.forEach((k, v) -> handleApiDoc(v, beans));
     }
 

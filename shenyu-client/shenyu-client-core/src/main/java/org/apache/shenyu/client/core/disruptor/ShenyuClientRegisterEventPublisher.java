@@ -32,7 +32,9 @@ import org.apache.shenyu.register.common.type.DataTypeParent;
 public class ShenyuClientRegisterEventPublisher {
     
     private static final ShenyuClientRegisterEventPublisher INSTANCE = new ShenyuClientRegisterEventPublisher();
-    
+
+    // fixme : 一个publisher拥有一个管理中心？-
+
     private DisruptorProviderManage<DataTypeParent> providerManage;
     
     /**

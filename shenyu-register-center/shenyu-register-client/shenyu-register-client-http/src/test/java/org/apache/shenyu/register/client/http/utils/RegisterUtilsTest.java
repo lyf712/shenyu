@@ -42,7 +42,7 @@ import static org.mockito.Mockito.when;
 /**
  * Test case for {@link RegisterUtils}.
  */
-public final class RegisterUtilsTest {
+final class RegisterUtilsTest {
 
     private final Gson gson = new Gson();
 

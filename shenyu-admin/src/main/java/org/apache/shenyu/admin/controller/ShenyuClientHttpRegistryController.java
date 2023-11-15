@@ -27,6 +27,8 @@ import org.apache.shenyu.register.common.dto.URIRegisterDTO;
 import org.apache.shenyu.register.client.server.api.ShenyuClientServerRegisterPublisher;
 import org.apache.shenyu.register.client.server.api.ShenyuClientServerRegisterRepository;
 import org.apache.shenyu.spi.Join;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,6 +42,8 @@ import javax.annotation.Resource;
 @RequestMapping("/shenyu-client")
 @Join
 public class ShenyuClientHttpRegistryController implements ShenyuClientServerRegisterRepository {
+
+    private final static Logger log = LoggerFactory.getLogger(ShenyuClientHttpRegistryController.class);
 
     private ShenyuClientServerRegisterPublisher publisher;
 
@@ -65,6 +69,7 @@ public class ShenyuClientHttpRegistryController implements ShenyuClientServerReg
     @PostMapping("/register-metadata")
     @ResponseBody
     public String registerMetadata(@RequestBody final MetaDataRegisterDTO metaDataRegisterDTO) {
+        log.info("register-metadata {}",metaDataRegisterDTO);
         publisher.publish(metaDataRegisterDTO);
         return ShenyuResultMessage.SUCCESS;
     }
@@ -78,6 +83,7 @@ public class ShenyuClientHttpRegistryController implements ShenyuClientServerReg
     @PostMapping("/register-uri")
     @ResponseBody
     public String registerURI(@RequestBody final URIRegisterDTO uriRegisterDTO) {
+        log.info("register-uri {}",uriRegisterDTO);
         publisher.publish(uriRegisterDTO);
         return ShenyuResultMessage.SUCCESS;
     }
@@ -91,6 +97,7 @@ public class ShenyuClientHttpRegistryController implements ShenyuClientServerReg
     @PostMapping("/register-apiDoc")
     @ResponseBody
     public String registerApiDoc(@RequestBody final ApiDocRegisterDTO apiDocRegisterDTO) {
+        log.info("register-apiDoc {}",apiDocRegisterDTO);
         publisher.publish(apiDocRegisterDTO);
         return ShenyuResultMessage.SUCCESS;
     }
@@ -104,6 +111,7 @@ public class ShenyuClientHttpRegistryController implements ShenyuClientServerReg
     @PostMapping("/register-discoveryConfig")
     @ResponseBody
     public String registerDiscoveryConfig(@RequestBody final DiscoveryConfigRegisterDTO discoveryConfigRegisterDTO) {
+        log.info("register-discoveryConfig {}",discoveryConfigRegisterDTO);
         discoveryService.registerDiscoveryConfig(discoveryConfigRegisterDTO);
         return ShenyuResultMessage.SUCCESS;
     }
